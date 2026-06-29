@@ -1,0 +1,150 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.mainBox {
+  display: flex;
+  min-height: 100vh;
+}
+
+.leftBox {
+  flex: 1;
+  background: #111827;
+  color: white;
+  padding: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.title {
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #10b981;
+}
+
+.heading {
+  font-size: 48px;
+  line-height: 1.2;
+  margin-bottom: 25px;
+}
+
+.text {
+  font-size: 17px;
+  line-height: 1.8;
+  color: #d1d5db;
+  margin-bottom: 35px;
+  max-width: 550px;
+}
+
+.featureBox {
+  margin-bottom: 40px;
+}
+
+.featureBox p {
+  margin-bottom: 14px;
+  font-size: 18px;
+}
+
+.imgBox img {
+  width: 320px;
+  margin-top: 20px;
+}
+
+.rightBox {
+  flex: 1;
+  background: #f8fafc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  width: 430px;
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+}
+
+.card h2 {
+  text-align: center;
+  font-size: 34px;
+  margin-bottom: 10px;
+  color: #111827;
+}
+
+.subText {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 30px;
+}
+
+.inputBox {
+  margin-bottom: 20px;
+}
+
+.inputBox label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.inputBox input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+}
+
+.inputBox input:focus {
+  border-color: #10b981;
+}
+
+.optionBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.optionBox a {
+  text-decoration: none;
+  color: #10b981;
+  font-weight: 500;
+}
+
+.btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: #10b981;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #059669;
+}
+
+.register {
+  text-align: center;
+  margin-top: 25px;
+  color: #6b7280;
+}
+
+.register a {
+  text-decoration: none;
+  color: #10b981;
+  font-weight: 600;
+}
