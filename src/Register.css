@@ -1,0 +1,29 @@
+.passBox {
+  display: flex;
+  gap: 10px;
+}
+
+.passBox input {
+  flex: 1;
+}
+
+.passBox button {
+  padding: 0 15px;
+  border: none;
+  background: #10b981;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.strength {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #10b981;
+}

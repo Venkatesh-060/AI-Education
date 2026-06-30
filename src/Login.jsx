@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import "./Login.css";
+import { Link } from "react-router-dom";
 
 export default function Login() {
 
@@ -107,7 +108,7 @@ export default function Login() {
           </form>
 
           <p className="register">
-            Don't have an account? <a href="/">Register</a>
+            Don't have an account? <Link to="/register">Register</Link>
           </p>
         </div>
       </div>
