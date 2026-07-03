@@ -1,12 +1,13 @@
 import React, {useState} from "react";
 import "./Login.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 
 export default function Login() {
 
     const[email, setEmail] = useState("");
     const[pass,setPass] = useState("");
     const[check, setCheck] = useState(false);
+    const navigate = useNavigate();
 
     const emailChange = (e) => {
         setEmail(e.target.value);
@@ -24,6 +25,7 @@ export default function Login() {
         e.preventDefault();
 
         console.log({email,pass,check})
+        navigate("/classroom");
     };
  
    return (

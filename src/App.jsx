@@ -4,6 +4,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 import Register from './Register';
 import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
+import DigitalClassroom from './DigitalClassroom';
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
         <Route path='/register' element={<Register/>} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/classroom" element={<DigitalClassroom/>}/>
       </Routes>
     </BrowserRouter>
   )
