@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./ClassroomChat.css";
+import "../styles/ClassroomChat.css";
 
 export default function ClassroomChat() {
   const [chat, setChat] = useState([

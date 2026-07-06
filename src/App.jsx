@@ -1,10 +1,11 @@
 import React from 'react'
-import Login from './Login'
+import Login from './pages/Login'
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import Register from './Register';
-import ForgotPassword from './ForgotPassword';
-import ResetPassword from './ResetPassword';
-import DigitalClassroom from './DigitalClassroom';
+import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import DigitalClassroom from "./pages/DigitalClassroom";
+import TrainerDashboard from './pages/TrainerDashboard';
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/classroom" element={<DigitalClassroom/>}/>
+        <Route path="/trainer-dashboard" element={<TrainerDashboard />}/>
       </Routes>
     </BrowserRouter>
   )

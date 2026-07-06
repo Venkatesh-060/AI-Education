@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Excalidraw } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
-import ClassroomChat from "./ClassroomChat";
-import "./DigitalClassroom.css";
+import ClassroomChat from "../components/ClassroomChat";
+import "../styles/DigitalClassroom.css";
 
 export default function DigitalClassroom() {
   const [initialData, setInitialData] = useState(null);

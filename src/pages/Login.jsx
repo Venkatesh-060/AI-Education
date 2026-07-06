@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import "./Login.css";
+import "../styles/Login.css";
 import { Link, useNavigate} from "react-router-dom";
 
 export default function Login() {
@@ -25,7 +25,7 @@ export default function Login() {
         e.preventDefault();
 
         console.log({email,pass,check})
-        navigate("/classroom");
+        navigate("/trainer-dashboard");
     };
  
    return (
