@@ -44,23 +44,29 @@ export default function TrainerDashboard() {
     });
   };
 
+  const openRecordings = () => {
+  navigate("/recordings");
+};
+
   return (
     <div className="dashboard">
-      {/* Header */}
-
       <div className="topBox">
         <div>
           <h1>Trainer Dashboard</h1>
           <p>Manage your live classes easily.</p>
         </div>
 
-        <button className="createSessionBtn" onClick={openPopup}>
-          + Create Live Session
-        </button>
+    <div className="headerButtons">
+          <button className="recordBtn" onClick={openRecordings}>
+            Recordings
+          </button>
+
+          <button className="createSessionBtn" onClick={openPopup}>
+            + Create Live Session
+          </button>
+        </div>
       </div>
-
-      {/* Statistics */}
-
+      
       <div className="cardSection">
         <div className="topCard">
           <h2>{sessionList.length}</h2>
@@ -77,8 +83,6 @@ export default function TrainerDashboard() {
           <p>Pending Sessions</p>
         </div>
       </div>
-
-      {/* Session List */}
 
       <div className="sessionBox">
         <div className="sectionHeading">
