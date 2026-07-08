@@ -1,11 +1,15 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import UploadRecordingModal from "../components/UploadRecordingModal";
 import "../styles/Recordings.css";
 
 export default function Recordings() {
-  const [openPopup, setOpenPopup] = useState(false);
+  const navigate = useNavigate();
 
-  const [recordList, setRecordList] = useState([]);
+  const [openPopup, setOpenPopup] = useState(false);
+const [recordList, setRecordList] = useState(() => {
+  return JSON.parse(localStorage.getItem("recordings")) || [];
+});
 
   const openModal = () => {
     setOpenPopup(true);
@@ -15,28 +19,64 @@ export default function Recordings() {
     setOpenPopup(false);
   };
 
-  const addRecording = (recordData) => {
-    setRecordList([...recordList, recordData]);
+ const addRecording = (recordData) => {
+
+  const updatedList = [...recordList, recordData];
+
+  setRecordList(updatedList);
+
+  localStorage.setItem(
+    "recordings",
+    JSON.stringify(updatedList)
+  );
+};
+
+  const openSessionPage = () => {
+    navigate("/session-recordings");
   };
 
-  const viewRecording = (video) => {
-    window.open(video, "_blank");
+  const viewRecording = (videoUrl) => {
+    if (videoUrl) {
+      window.open(videoUrl, "_blank");
+    } else {
+      alert("Video not available.");
+    }
   };
 
   return (
     <div className="recordDashboard">
+
+      {/* Header */}
+
       <div className="topSection">
-        <div>
+
+        <div className="pageTitle">
           <h1>Recording Dashboard</h1>
           <p>Manage all uploaded classroom recordings.</p>
         </div>
 
-        <button className="uploadRecordBtn" onClick={openModal}>
-          + Upload Recording
-        </button>
+        <div style={{ display: "flex", gap: "15px" }}>
+          <button
+            className="downloadBtn"
+            onClick={openSessionPage}
+          >
+            View Recordings
+          </button>
+
+          <button
+            className="uploadRecordBtn"
+            onClick={openModal}
+          >
+            + Upload Recording
+          </button>
+        </div>
+
       </div>
 
+      {/* Dashboard Cards */}
+
       <div className="dashboardCards">
+
         <div className="dashCard">
           <h2>{recordList.length}</h2>
           <p>Total Recordings</p>
@@ -51,63 +91,69 @@ export default function Recordings() {
           <h2>
             {recordList.reduce(
               (total, item) => total + Number(item.duration),
-              0,
+              0
             )}
           </h2>
-
           <p>Total Minutes</p>
         </div>
+
       </div>
 
+      {/* Recording List */}
+
       <div className="recordSection">
+
         <div className="sectionTop">
           <h2>Uploaded Recordings</h2>
-
           <span>{recordList.length} Files</span>
         </div>
 
         {recordList.length === 0 ? (
           <div className="emptyBox">
             <h3>No Recordings Found</h3>
-
             <p>Upload your first classroom recording.</p>
           </div>
         ) : (
           recordList.map((item) => (
             <div className="recordCard" key={item.recordingId}>
+
               <div className="recordHeader">
+
                 <div>
                   <h3>{item.title}</h3>
 
                   <p>
-                    Recording ID :<strong> {item.recordingId}</strong>
+                    <strong>Recording ID :</strong> {item.recordingId}
                   </p>
                 </div>
 
-                <span className="uploadStatus">Uploaded</span>
+                <span className="uploadStatus">
+                  Uploaded
+                </span>
+
               </div>
 
               <div className="recordInfo">
+
                 <div className="infoCard">
                   <span>Session</span>
-
                   <h4>{item.session}</h4>
                 </div>
 
                 <div className="infoCard">
                   <span>Duration</span>
-
-                  <h4>{item.duration} Min</h4>
+                  <h4>{item.duration} Minutes</h4>
                 </div>
 
                 <div className="infoCard">
                   <span>Video</span>
-
-                  <h4>{item.video.name}</h4>
+                  <h4>{item.videoName}</h4>
                 </div>
+
               </div>
 
               <div className="recordBtns">
+
                 <button
                   className="viewBtn"
                   onClick={() => viewRecording(item.videoUrl)}
@@ -115,13 +161,18 @@ export default function Recordings() {
                   View Recording
                 </button>
 
-                <a href={item.videoUrl} download={item.video.name}>
-                  <button className="downloadBtn">Download</button>
+                <a href={item.videoUrl} download={item.videoName}>
+                  <button className="downloadBtn">
+                    Download
+                  </button>
                 </a>
+
               </div>
+
             </div>
           ))
         )}
+
       </div>
 
       {openPopup && (
@@ -130,6 +181,7 @@ export default function Recordings() {
           addRecording={addRecording}
         />
       )}
+
     </div>
   );
 }

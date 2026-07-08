@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../styles/UploadRecordingModal.css";
 
 export default function UploadRecordingModal(props) {
+
   const [sessionName, setSessionName] = useState("");
   const [recordTitle, setRecordTitle] = useState("");
   const [videoFile, setVideoFile] = useState(null);
@@ -17,17 +18,18 @@ export default function UploadRecordingModal(props) {
   ];
 
   const uploadRecording = () => {
+
     if (sessionName === "") {
       alert("Please select session.");
       return;
     }
 
-    if (recordTitle === "") {
+    if (recordTitle.trim() === "") {
       alert("Please enter recording title.");
       return;
     }
 
-    if (videoFile === null) {
+    if (!videoFile) {
       alert("Please choose a video.");
       return;
     }
@@ -37,18 +39,19 @@ export default function UploadRecordingModal(props) {
       return;
     }
 
-    const randomId = "REC" + Math.floor(100000 + Math.random() * 900000);
-
-    const recordData = {
-      recordingId: randomId,
+    const recording = {
+      recordingId: "REC" + Math.floor(Math.random() * 1000000),
       session: sessionName,
       title: recordTitle,
       duration: duration,
-      video: videoFile,
+      uploadDate: new Date().toLocaleDateString(),
+
+      // Save only these
+      videoName: videoFile.name,
       videoUrl: URL.createObjectURL(videoFile),
     };
 
-    props.addRecording(recordData);
+    props.addRecording(recording);
 
     alert("Recording Uploaded Successfully.");
 
@@ -57,23 +60,31 @@ export default function UploadRecordingModal(props) {
 
   return (
     <div className="uploadPopup">
+
       <div className="uploadBox">
+
         <div className="uploadHeader">
+
           <h2>Upload Recording</h2>
 
-          <button className="closeUploadBtn" onClick={props.closeModal}>
+          <button
+            className="closeUploadBtn"
+            onClick={props.closeModal}
+          >
             ✕
           </button>
+
         </div>
 
         <div className="inputGroup">
-          <label>Select Session</label>
+
+          <label>Session</label>
 
           <select
             value={sessionName}
             onChange={(e) => setSessionName(e.target.value)}
           >
-            <option value="">Choose Session</option>
+            <option value="">Select Session</option>
 
             {sessionList.map((item, index) => (
               <option key={index} value={item}>
@@ -81,20 +92,24 @@ export default function UploadRecordingModal(props) {
               </option>
             ))}
           </select>
+
         </div>
 
         <div className="inputGroup">
+
           <label>Recording Title</label>
 
           <input
             type="text"
-            placeholder="Enter Recording Title"
+            placeholder="Enter title"
             value={recordTitle}
             onChange={(e) => setRecordTitle(e.target.value)}
           />
+
         </div>
 
         <div className="inputGroup">
+
           <label>Upload Video</label>
 
           <input
@@ -102,29 +117,42 @@ export default function UploadRecordingModal(props) {
             accept="video/*"
             onChange={(e) => setVideoFile(e.target.files[0])}
           />
+
         </div>
 
         <div className="inputGroup">
+
           <label>Duration (Minutes)</label>
 
           <input
             type="number"
-            placeholder="Enter Duration"
+            placeholder="Enter duration"
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
           />
+
         </div>
 
         <div className="buttonBox">
-          <button className="cancelBtn" onClick={props.closeModal}>
+
+          <button
+            className="cancelBtn"
+            onClick={props.closeModal}
+          >
             Cancel
           </button>
 
-          <button className="uploadBtn" onClick={uploadRecording}>
+          <button
+            className="uploadBtn"
+            onClick={uploadRecording}
+          >
             Upload Recording
           </button>
+
         </div>
+
       </div>
+
     </div>
   );
 }
