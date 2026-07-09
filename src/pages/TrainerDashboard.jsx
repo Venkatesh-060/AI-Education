@@ -50,6 +50,10 @@ export default function TrainerDashboard() {
     navigate("/session-recordings");
   };
 
+  const openSessionManagement = () => {
+  navigate("/session-management");
+};
+
   return (
     <div className="dashboard">
       {/* Header */}
@@ -61,6 +65,13 @@ export default function TrainerDashboard() {
         </div>
 
         <div className="headerButtons">
+          <button
+            className="recordBtn"
+            onClick={openSessionManagement}
+          >
+            Session Management
+          </button>
+
           <button
             className="recordBtn"
             onClick={openRecordings}

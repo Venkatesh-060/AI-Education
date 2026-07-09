@@ -8,6 +8,7 @@ import DigitalClassroom from "./pages/DigitalClassroom";
 import TrainerDashboard from './pages/TrainerDashboard';
 import Recordings from "./pages/Recordings";
 import SessionRecordings from "./pages/SessionRecordings";
+import SessionManagement from "./pages/SessionManagement";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/trainer-dashboard" element={<TrainerDashboard />}/>
         <Route path="/recordings" element={<Recordings />} />
         <Route path="/session-recordings" element={<SessionRecordings />}/>
+        <Route path="/session-management" element={<SessionManagement />}/>
       </Routes>
     </BrowserRouter>
   )
