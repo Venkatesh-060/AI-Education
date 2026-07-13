@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import "../styles/Login.css";
 import { Link, useNavigate} from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
 
@@ -21,12 +22,55 @@ export default function Login() {
         setCheck(e.target.checked);
     }
 
-    const loginBtn = (e) => {
-        e.preventDefault();
+const loginBtn = async (e) => {
+  e.preventDefault();
 
-        console.log({email,pass,check})
-        navigate("/trainer-dashboard");
-    };
+  try {
+
+    const response = await axios.post(
+      "http://localhost:8080/auth/login",
+      {
+        email: email,
+        password: pass
+      }
+    );
+
+
+    const { token, role, userId } = response.data;
+
+
+    localStorage.setItem("token", token);
+    localStorage.setItem("role", role);
+    localStorage.setItem("userId", userId);
+
+
+    alert("Login Successful");
+
+
+    // Role based navigation
+
+    if(role === "TRAINER"){
+      navigate("/trainer-dashboard");
+    }
+    else if(role === "STUDENT"){
+      navigate("/student-dashboard");
+    }
+    else{
+      navigate("/");
+    }
+
+
+  }
+  catch(error){
+
+    console.log(error);
+
+    alert(
+      error.response?.data || "Login Failed"
+    );
+
+  }
+};
  
    return (
     <div className="mainBox">

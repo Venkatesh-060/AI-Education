@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../styles/Register.css";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function Register() {
   const [fname, setFname] = useState("");
@@ -48,7 +49,7 @@ export default function Register() {
     return "Strong";
   };
 
-  const registerBtn = (e) => {
+  const registerBtn = async (e) => {
     e.preventDefault();
 
     let err = {};
@@ -85,15 +86,27 @@ export default function Register() {
     setErrors(err);
 
     if (Object.keys(err).length === 0) {
-      console.log({
-        fname,
-        lname,
-        email,
-        pass,
-      });
+      try {
 
-      alert("Registration Successful");
-      navigate("/");
+  const response = await axios.post(
+    "http://localhost:8080/auth/register",
+    {
+      firstName: fname,
+      lastName: lname,
+      email: email,
+      password: pass,
+      role: "TRAINER"
+    }
+  );
+
+  alert(response.data);
+  navigate("/");
+
+} catch (error) {
+
+  alert(error.response?.data || "Registration Failed");
+
+}
     }
   };
 

@@ -1,50 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddSessionModal from "../components/AddSessionModal";
 import "../styles/SessionManagement.css";
+import axios from "axios";
 
 export default function SessionManagement() {
   const navigate = useNavigate();
 
   const [openPopup, setOpenPopup] = useState(false);
 
-  const [sessionList, setSessionList] = useState([
-    {
-      sessionId: "SES1001",
-      sessionName: "React Basics",
-      trainerName: "Venkatesan",
-      date: "2026-07-12",
-      time: "10:00 AM",
-      duration: "60",
-      description: "Introduction to React",
-      status: "Upcoming",
-    },
-    {
-      sessionId: "SES1002",
-      sessionName: "Java Full Stack",
-      trainerName: "Naveen Kumar",
-      date: "2026-07-14",
-      time: "11:30 AM",
-      duration: "90",
-      description: "Backend Development",
-      status: "Live",
-    },
-    {
-      sessionId: "SES1003",
-      sessionName: "Python",
-      trainerName: "Amritha",
-      date: "2026-07-08",
-      time: "02:00 PM",
-      duration: "45",
-      description: "Python Basics",
-      status: "Completed",
-    },
-  ]);
+  const [sessionList, setSessionList] = useState([]);
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [dateFilter, setDateFilter] = useState("");
 
+  const fetchSessions = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/session/all");
+
+      setSessionList(response.data);
+    } catch (error) {
+      console.log(error);
+      alert("Unable to load sessions");
+    }
+  };
+
+  useEffect(() => {
+    fetchSessions();
+  }, []);
   const openModal = () => {
     setOpenPopup(true);
   };
@@ -53,42 +37,52 @@ export default function SessionManagement() {
     setOpenPopup(false);
   };
 
-  const addSession = (sessionData) => {
-    setSessionList([...sessionList, sessionData]);
+  const addSession = async (sessionData) => {
+    try {
+      await axios.post("http://localhost:8080/api/session/create", sessionData);
+
+      alert("Session Added Successfully");
+
+      fetchSessions();
+    } catch (error) {
+      console.log(error);
+
+      alert("Failed to add session");
+    }
   };
 
-  const deleteSession = (id) => {
-    const newList = sessionList.filter((item) => item.sessionId !== id);
+  const deleteSession = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/session/${id}`);
 
-    setSessionList(newList);
+      alert("Session Deleted Successfully");
 
-    alert("Session Deleted Successfully.");
+      fetchSessions();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const editSession = (id) => {
-    const sessionName = prompt("Enter New Session Name");
+  const editSession = async (id) => {
+    const sessionName = prompt("Enter Session Name");
 
     if (!sessionName) return;
 
-    const trainerName = prompt("Enter Trainer Name");
+    try {
+      await axios.put(
+        `http://localhost:8080/api/session/${id}`,
 
-    if (!trainerName) return;
+        {
+          sessionName: sessionName,
+        },
+      );
 
-    const newList = sessionList.map((item) => {
-      if (item.sessionId === id) {
-        return {
-          ...item,
-          sessionName,
-          trainerName,
-        };
-      }
+      alert("Session Updated Successfully");
 
-      return item;
-    });
-
-    setSessionList(newList);
-
-    alert("Session Updated Successfully.");
+      fetchSessions();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const joinSession = (id) => {
@@ -185,13 +179,13 @@ export default function SessionManagement() {
           </div>
         ) : (
           filteredSessions.map((item) => (
-            <div className="sessionCard" key={item.sessionId}>
+            <div className="sessionCard" key={item.id}>
               <div className="cardHeader">
                 <div>
                   <h3>{item.sessionName}</h3>
 
                   <p>
-                    <strong>Session ID :</strong> {item.sessionId}
+                    <strong>Session ID :</strong> {item.id}
                   </p>
                 </div>
 
@@ -211,17 +205,22 @@ export default function SessionManagement() {
               <div className="infoGrid">
                 <div className="infoCard">
                   <span>Trainer</span>
-                  <h4>{item.trainerName}</h4>
+                  <h4>{item.trainerId}</h4>
+                </div>
+
+                <div className="infoCard">
+                  <span>Batch</span>
+                  <h4>{item.batchName}</h4>
                 </div>
 
                 <div className="infoCard">
                   <span>Date</span>
-                  <h4>{item.date}</h4>
+                  <h4>{item.sessionDate}</h4>
                 </div>
 
                 <div className="infoCard">
                   <span>Time</span>
-                  <h4>{item.time}</h4>
+                  <h4>{item.startTime}</h4>
                 </div>
 
                 <div className="infoCard">
@@ -238,21 +237,21 @@ export default function SessionManagement() {
               <div className="buttonSection">
                 <button
                   className="joinBtn"
-                  onClick={() => joinSession(item.sessionId)}
+                  onClick={() => joinSession(item.id)}
                 >
                   Join Session
                 </button>
 
                 <button
                   className="editBtn"
-                  onClick={() => editSession(item.sessionId)}
+                  onClick={() => editSession(item.id)}
                 >
                   Edit
                 </button>
 
                 <button
                   className="deleteBtn"
-                  onClick={() => deleteSession(item.sessionId)}
+                  onClick={() => deleteSession(item.id)}
                 >
                   Delete
                 </button>

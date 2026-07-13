@@ -5,6 +5,7 @@ export default function CreateSessionModal(props) {
   const [batchName, setBatchName] = useState("");
   const [classDate, setClassDate] = useState("");
   const [classTime, setClassTime] = useState("");
+  const [endTime, setEndTime] = useState("");
 
   const batchList = [
     "React Beginners",
@@ -27,7 +28,12 @@ export default function CreateSessionModal(props) {
     }
 
     if (classTime === "") {
-      alert("Please select time");
+      alert("Please select start time");
+      return;
+    }
+
+    if (endTime === "") {
+      alert("Please select end time");
       return;
     }
 
@@ -38,6 +44,7 @@ export default function CreateSessionModal(props) {
       batch: batchName,
       date: classDate,
       time: classTime,
+      endTime: endTime,
       notified: false,
     };
 
@@ -87,12 +94,22 @@ export default function CreateSessionModal(props) {
         </div>
 
         <div className="inputBox">
-          <label>Select Time</label>
+          <label>Start Time</label>
 
           <input
             type="time"
             value={classTime}
             onChange={(e) => setClassTime(e.target.value)}
+          />
+        </div>
+
+        <div className="inputBox">
+          <label>End Time</label>
+
+          <input
+            type="time"
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
           />
         </div>
 

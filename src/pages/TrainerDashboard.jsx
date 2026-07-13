@@ -2,12 +2,39 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateSessionModal from "../components/CreateSessionModal";
 import "../styles/TrainerDashboard.css";
+import { useEffect } from "react";
+import axios from "axios";
 
 export default function TrainerDashboard() {
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
   const [sessionList, setSessionList] = useState([]);
+
+  const fetchSessions = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/session/all");
+
+      setSessionList(response.data);
+    } catch (error) {
+      console.log(error);
+      alert("Unable to load sessions");
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (!token || role !== "TRAINER") {
+      navigate("/");
+      return;
+    }
+
+    fetchSessions();
+  }, []);
+
+  
 
   const openPopup = () => {
     setOpen(true);
@@ -17,19 +44,54 @@ export default function TrainerDashboard() {
     setOpen(false);
   };
 
-  const saveSession = (sessionData) => {
-    setSessionList([...sessionList, sessionData]);
-  };
+const saveSession = async (sessionData) => {
+  console.log("saveSession called");
+  console.log(sessionData);
 
+  try {
+    const trainerId = localStorage.getItem("userId");
+
+    const newSession = {
+      sessionName: "Live Class",
+      trainerId: trainerId,
+      batchName: sessionData.batch,
+      sessionDate: sessionData.date,
+      startTime: sessionData.time,
+      endTime: sessionData.endTime,
+    };
+
+    console.log(newSession);
+
+    await axios.post(
+      "http://localhost:8080/api/session/create",
+      newSession
+    );
+
+    alert("Session Created Successfully");
+
+    fetchSessions();
+    closePopup();
+
+  } catch (error) {
+    console.log(error);
+    alert("Session creation failed");
+  }
+};
   const notifyBtnClick = (id) => {
-    const newList = sessionList.map((item) => {
+    const updatedList = sessionList.map((item) => {
       if (item.roomId === id) {
-        item.notified = true;
+        return {
+          ...item,
+          notified: true,
+        };
       }
+
       return item;
     });
 
-    setSessionList(newList);
+    setSessionList(updatedList);
+
+    localStorage.setItem("sessions", JSON.stringify(updatedList));
 
     alert("Students notified successfully.");
   };
@@ -51,8 +113,8 @@ export default function TrainerDashboard() {
   };
 
   const openSessionManagement = () => {
-  navigate("/session-management");
-};
+    navigate("/session-management");
+  };
 
   return (
     <div className="dashboard">
@@ -65,31 +127,19 @@ export default function TrainerDashboard() {
         </div>
 
         <div className="headerButtons">
-          <button
-            className="recordBtn"
-            onClick={openSessionManagement}
-          >
+          <button className="recordBtn" onClick={openSessionManagement}>
             Session Management
           </button>
 
-          <button
-            className="recordBtn"
-            onClick={openRecordings}
-          >
+          <button className="recordBtn" onClick={openRecordings}>
             Upload Recordings
           </button>
 
-          <button
-            className="recordBtn"
-            onClick={openSessionRecordings}
-          >
+          <button className="recordBtn" onClick={openSessionRecordings}>
             Session Recordings
           </button>
 
-          <button
-            className="createSessionBtn"
-            onClick={openPopup}
-          >
+          <button className="createSessionBtn" onClick={openPopup}>
             + Create Live Session
           </button>
         </div>
@@ -104,16 +154,12 @@ export default function TrainerDashboard() {
         </div>
 
         <div className="topCard">
-          <h2>
-            {sessionList.filter((item) => item.notified).length}
-          </h2>
+          <h2>{sessionList.filter((item) => item.notified).length}</h2>
           <p>Students Notified</p>
         </div>
 
         <div className="topCard">
-          <h2>
-            {sessionList.filter((item) => !item.notified).length}
-          </h2>
+          <h2>{sessionList.filter((item) => !item.notified).length}</h2>
           <p>Pending Sessions</p>
         </div>
       </div>
@@ -135,36 +181,30 @@ export default function TrainerDashboard() {
           </div>
         ) : (
           sessionList.map((item) => (
-            <div
-              className="sessionCard"
-              key={item.roomId}
-            >
+            <div className="sessionCard" key={item.id}>
               <div className="cardHeader">
                 <div>
-                  <h3>{item.batch}</h3>
+                  <h3>{item.batchName}</h3>
 
                   <p className="roomNumber">
-                    Room ID :
-                    <strong> {item.roomId}</strong>
+                    Room ID :<strong> {item.id}</strong>
                   </p>
                 </div>
 
-                <span className="statusBadge">
-                  Scheduled
-                </span>
+                <span className="statusBadge">Scheduled</span>
               </div>
 
               <div className="infoGrid">
                 <div className="infoCard">
                   <span>Date</span>
 
-                  <h4>{item.date}</h4>
+                  <h4>{item.sessionDate}</h4>
                 </div>
 
                 <div className="infoCard">
                   <span>Time</span>
 
-                  <h4>{item.time}</h4>
+                  <h4>{item.startTime}</h4>
                 </div>
 
                 <div className="infoCard">
@@ -176,18 +216,13 @@ export default function TrainerDashboard() {
 
               <div className="actionBar">
                 {item.notified ? (
-                  <button
-                    className="doneBtn"
-                    disabled
-                  >
+                  <button className="doneBtn" disabled>
                     ✓ Students Notified
                   </button>
                 ) : (
                   <button
                     className="notifyBtn"
-                    onClick={() =>
-                      notifyBtnClick(item.roomId)
-                    }
+                    onClick={() => notifyBtnClick(item.roomId)}
                   >
                     Notify Students
                   </button>
@@ -195,9 +230,7 @@ export default function TrainerDashboard() {
 
                 <button
                   className="startBtn"
-                  onClick={() =>
-                    startClass(item.roomId)
-                  }
+                  onClick={() => startClass(item.id)}
                 >
                   Start Session
                 </button>
@@ -210,10 +243,7 @@ export default function TrainerDashboard() {
       {/* Popup */}
 
       {open && (
-        <CreateSessionModal
-          closeModal={closePopup}
-          addSession={saveSession}
-        />
+        <CreateSessionModal closeModal={closePopup} addSession={saveSession} />
       )}
     </div>
   );
