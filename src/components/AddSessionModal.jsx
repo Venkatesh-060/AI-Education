@@ -3,76 +3,71 @@ import "../styles/AddSessionModal.css";
 
 export default function AddSessionModal(props) {
   const [sessionName, setSessionName] = useState("");
-  const [trainerName, setTrainerName] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const [duration, setDuration] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("Upcoming");
+  const [trainerId, setTrainerId] = useState("");
+  const [batchName, setBatchName] = useState("");
+  const [sessionDate, setSessionDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
 
   useEffect(() => {
     if (props.editData) {
-      setSessionName(props.editData.sessionName);
-      setTrainerName(props.editData.trainerName);
-      setDate(props.editData.date);
-      setTime(props.editData.time);
-      setDuration(props.editData.duration);
-      setDescription(props.editData.description);
-      setStatus(props.editData.status);
+      setSessionName(props.editData.sessionName || "");
+      setTrainerId(props.editData.trainerId || "");
+      setBatchName(props.editData.batchName || "");
+      setSessionDate(props.editData.sessionDate || "");
+      setStartTime(props.editData.startTime || "");
+      setEndTime(props.editData.endTime || "");
     }
   }, [props.editData]);
 
   const saveSession = () => {
-    if (sessionName === "") {
-      alert("Please enter session name.");
+    if (sessionName.trim() === "") {
+      alert("Please enter session name");
       return;
     }
 
-    if (trainerName === "") {
-      alert("Please enter trainer name.");
+    if (trainerId.trim() === "") {
+      alert("Please enter trainer id");
       return;
     }
 
-    if (date === "") {
-      alert("Please select date.");
+    if (batchName.trim() === "") {
+      alert("Please enter batch name");
       return;
     }
 
-    if (time === "") {
-      alert("Please select time.");
+    if (sessionDate === "") {
+      alert("Please select date");
       return;
     }
 
-    if (duration === "") {
-      alert("Please enter duration.");
-      return;
-    }
-
-    if (description === "") {
-      alert("Please enter description.");
+    if (startTime === "") {
+      alert("Please select start time");
       return;
     }
 
     const sessionData = {
-      sessionId:
-        props.editData?.sessionId ||
-        "SES" + Math.floor(100000 + Math.random() * 900000),
+      sessionName: sessionName,
 
-      sessionName,
-      trainerName,
-      date,
-      time,
-      duration,
-      description,
-      status,
+      trainerId: trainerId,
+
+      batchName: batchName,
+
+      sessionDate: sessionDate,
+
+      startTime: startTime,
+
+      endTime: endTime,
     };
 
     if (props.editData) {
       props.updateSession(sessionData);
-      alert("Session Updated Successfully.");
+
+      alert("Session Updated Successfully");
     } else {
       props.addSession(sessionData);
-      alert("Session Added Successfully.");
+
+      alert("Session Added Successfully");
     }
 
     props.closeModal();
@@ -101,65 +96,54 @@ export default function AddSessionModal(props) {
         </div>
 
         <div className="inputBox">
-          <label>Trainer Name</label>
+          <label>Trainer ID</label>
 
           <input
             type="text"
-            placeholder="Enter Trainer Name"
-            value={trainerName}
-            onChange={(e) => setTrainerName(e.target.value)}
+            placeholder="Enter Trainer ID"
+            value={trainerId}
+            onChange={(e) => setTrainerId(e.target.value)}
           />
         </div>
 
         <div className="inputBox">
-          <label>Date</label>
+          <label>Batch Name</label>
+
+          <input
+            type="text"
+            placeholder="Enter Batch Name"
+            value={batchName}
+            onChange={(e) => setBatchName(e.target.value)}
+          />
+        </div>
+
+        <div className="inputBox">
+          <label>Session Date</label>
 
           <input
             type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
+            value={sessionDate}
+            onChange={(e) => setSessionDate(e.target.value)}
           />
         </div>
 
         <div className="inputBox">
-          <label>Time</label>
+          <label>Start Time</label>
 
           <input
             type="time"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
           />
         </div>
 
         <div className="inputBox">
-          <label>Duration (Minutes)</label>
+          <label>End Time</label>
 
           <input
-            type="number"
-            placeholder="Enter Duration"
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-          />
-        </div>
-
-        <div className="inputBox">
-          <label>Status</label>
-
-          <select value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option>Upcoming</option>
-            <option>Live</option>
-            <option>Completed</option>
-          </select>
-        </div>
-
-        <div className="inputBox">
-          <label>Description</label>
-
-          <textarea
-            rows="4"
-            placeholder="Enter Session Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            type="time"
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
           />
         </div>
 

@@ -34,8 +34,6 @@ export default function TrainerDashboard() {
     fetchSessions();
   }, []);
 
-  
-
   const openPopup = () => {
     setOpen(true);
   };
@@ -44,39 +42,35 @@ export default function TrainerDashboard() {
     setOpen(false);
   };
 
-const saveSession = async (sessionData) => {
-  console.log("saveSession called");
-  console.log(sessionData);
+  const saveSession = async (sessionData) => {
+    console.log("saveSession called");
+    console.log(sessionData);
 
-  try {
-    const trainerId = localStorage.getItem("userId");
+    try {
+      const trainerId = localStorage.getItem("userId");
 
-    const newSession = {
-      sessionName: "Live Class",
-      trainerId: trainerId,
-      batchName: sessionData.batch,
-      sessionDate: sessionData.date,
-      startTime: sessionData.time,
-      endTime: sessionData.endTime,
-    };
+      const newSession = {
+        sessionName: "Live Class",
+        trainerId: trainerId,
+        batchName: sessionData.batch,
+        sessionDate: sessionData.date,
+        startTime: sessionData.time,
+        endTime: sessionData.endTime,
+      };
 
-    console.log(newSession);
+      console.log(newSession);
 
-    await axios.post(
-      "http://localhost:8080/api/session/create",
-      newSession
-    );
+      await axios.post("http://localhost:8080/api/session/create", newSession);
 
-    alert("Session Created Successfully");
+      alert("Session Created Successfully");
 
-    fetchSessions();
-    closePopup();
-
-  } catch (error) {
-    console.log(error);
-    alert("Session creation failed");
-  }
-};
+      fetchSessions();
+      closePopup();
+    } catch (error) {
+      console.log(error);
+      alert("Session creation failed");
+    }
+  };
   const notifyBtnClick = (id) => {
     const updatedList = sessionList.map((item) => {
       if (item.roomId === id) {
@@ -116,6 +110,10 @@ const saveSession = async (sessionData) => {
     navigate("/session-management");
   };
 
+  const openAttendance = () => {
+    navigate("/attendance");
+  };
+
   return (
     <div className="dashboard">
       {/* Header */}
@@ -137,6 +135,10 @@ const saveSession = async (sessionData) => {
 
           <button className="recordBtn" onClick={openSessionRecordings}>
             Session Recordings
+          </button>
+
+          <button className="recordBtn" onClick={openAttendance}>
+            Attendance
           </button>
 
           <button className="createSessionBtn" onClick={openPopup}>

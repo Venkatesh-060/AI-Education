@@ -1,0 +1,131 @@
+.studentDashboard {
+  min-height: 100vh;
+
+  background: #f8fafc;
+
+  padding: 40px 60px;
+
+  font-family: "Inter", sans-serif;
+}
+
+/* Header */
+
+.studentHeader {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 35px;
+}
+
+.studentHeader h1 {
+  margin: 0;
+
+  font-size: 32px;
+
+  color: #111827;
+}
+
+.studentHeader p {
+  color: #64748b;
+
+  margin-top: 8px;
+
+  font-size: 16px;
+}
+
+/* Session Container */
+
+.sessionContainer {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+
+  gap: 25px;
+}
+
+/* Session Card */
+
+.studentCard {
+  background: white;
+
+  padding: 25px;
+
+  border-radius: 18px;
+
+  border: 1px solid #e5e7eb;
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+
+  transition: 0.3s;
+}
+
+.studentCard:hover {
+  transform: translateY(-5px);
+
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.studentCard h2 {
+  margin-bottom: 18px;
+
+  color: #111827;
+
+  font-size: 22px;
+}
+
+.sessionInfo {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+  margin-bottom: 25px;
+}
+
+.sessionInfo p {
+  margin: 0;
+
+  color: #475569;
+
+  font-size: 15px;
+}
+
+.sessionInfo span {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Button */
+
+.studentCard button {
+  width: 100%;
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.studentCard button:hover {
+  background: #059669;
+
+  transform: scale(1.02);
+}
+
+/* Empty State */
+
+.emptySession {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  text-align: center;
+  color: #64748b;
+}

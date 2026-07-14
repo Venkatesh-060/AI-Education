@@ -85,10 +85,10 @@ export default function SessionManagement() {
     }
   };
 
-  const joinSession = (id) => {
+  const joinSession = (session) => {
     navigate("/classroom", {
       state: {
-        roomId: id,
+        roomId:session.id,
       },
     });
   };
@@ -237,7 +237,7 @@ export default function SessionManagement() {
               <div className="buttonSection">
                 <button
                   className="joinBtn"
-                  onClick={() => joinSession(item.id)}
+                  onClick={() => joinSession(item)}
                 >
                   Join Session
                 </button>

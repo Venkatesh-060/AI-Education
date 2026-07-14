@@ -14,6 +14,7 @@ export default function Register() {
   const [showCpass, setShowCpass] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const [role, setRole] = useState("STUDENT");
 
   const fnameChange = (e) => {
     setFname(e.target.value);
@@ -87,26 +88,22 @@ export default function Register() {
 
     if (Object.keys(err).length === 0) {
       try {
+        const response = await axios.post(
+          "http://localhost:8080/auth/register",
+          {
+            firstName: fname,
+            lastName: lname,
+            email: email,
+            password: pass,
+            role: role
+          },
+        );
 
-  const response = await axios.post(
-    "http://localhost:8080/auth/register",
-    {
-      firstName: fname,
-      lastName: lname,
-      email: email,
-      password: pass,
-      role: "TRAINER"
-    }
-  );
-
-  alert(response.data);
-  navigate("/");
-
-} catch (error) {
-
-  alert(error.response?.data || "Registration Failed");
-
-}
+        alert(response.data.message);
+        navigate("/");
+      } catch (error) {
+        alert(error.response?.data || "Registration Failed");
+      }
     }
   };
 
@@ -174,6 +171,15 @@ export default function Register() {
                 onChange={emailChange}
               />
               <p className="error">{errors.email}</p>
+            </div>
+
+            <div className="inputBox">
+              <label>Role</label>
+
+              <select value={role} onChange={(e) => setRole(e.target.value)}>
+                <option value="STUDENT">Student</option>
+                <option value="TRAINER">Trainer</option>
+              </select>
             </div>
 
             <div className="inputBox">
