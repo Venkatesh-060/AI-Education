@@ -7,14 +7,23 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export default function DigitalClassroom() {
-  const [initialData, setInitialData] = useState(null);
-
+  const [initialData, setInitialData] = useState({
+    elements: [],
+  });
   const location = useLocation();
 
   const navigate = useNavigate();
 
   const sessionId = location.state?.roomId;
 
+  if (!sessionId) {
+    return (
+      <div>
+        <h2>No session selected.</h2>
+      </div>
+    );
+  }
+  console.log("Session ID:", sessionId);
   // MARK JOIN ATTENDANCE
 
   const markAttendance = async () => {
@@ -101,7 +110,17 @@ export default function DigitalClassroom() {
   const leaveClass = async () => {
     await updateLeaveAttendance();
 
-    navigate("/student-dashboard");
+    const role = localStorage.getItem("role");
+
+    if (role === "TRAINER") {
+      navigate("/trainer-dashboard");
+    } else if (role === "STUDENT") {
+      navigate("/student-dashboard");
+    } else if (role === "ADMIN") {
+      navigate("/admin-dashboard");
+    } else {
+      navigate("/");
+    }
   };
 
   useEffect(() => {
@@ -111,14 +130,6 @@ export default function DigitalClassroom() {
       setInitialData({
         elements: JSON.parse(savedData),
       });
-    } else {
-      setInitialData({
-        elements: [],
-      });
-    }
-
-    if (sessionId) {
-      markAttendance();
     }
   }, []);
 
@@ -129,10 +140,6 @@ export default function DigitalClassroom() {
       JSON.stringify(elements),
     );
   };
-
-  if (!initialData) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="digitalContainer">
@@ -153,7 +160,7 @@ export default function DigitalClassroom() {
       </div>
 
       <div className="chatSection">
-        <ClassroomChat />
+        <ClassroomChat sessionId={sessionId} />
       </div>
     </div>
   );

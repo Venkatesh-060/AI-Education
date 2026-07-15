@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AttendanceStatsCard from "../components/AttendanceStatsCard";
 import AttendanceFilters from "../components/AttendanceFilters";
 import AttendanceTable from "../components/AttendanceTable";
@@ -12,10 +12,6 @@ export default function Attendance() {
   const [error, setError] = useState("");
   const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
-
-  useEffect(() => {
-    loadAttendance();
-  }, []);
 
   const loadAttendance = async () => {
     try {
@@ -32,6 +28,12 @@ export default function Attendance() {
       setLoading(false);
     }
   };
+  
+  useEffect(() => {
+    loadAttendance();
+  }, []);
+
+  
 
   const filtered = attendance.filter((item) =>
     (item.userId || "").toLowerCase().includes(search.toLowerCase()),

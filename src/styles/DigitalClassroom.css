@@ -1,44 +1,66 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.digitalContainer{
-    display:flex;
-    gap:20px;
-    padding:20px;
-    height:100vh;
-    background:#f0fdf4;
+.digitalContainer {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  height: 100vh;
+  background: #f0fdf4;
 }
 
-.whiteboardSection{
-    width:75%;
-    display:flex;
-    flex-direction:column;
+.whiteboardSection {
+  width: 75%;
+  display: flex;
+  flex-direction: column;
 }
 
-.whiteboardSection h2{
-    font-size:30px;
-    color:#111827;
-    margin-bottom:15px;
+.whiteboardSection h2 {
+  font-size: 30px;
+  color: #111827;
+  margin-bottom: 15px;
 }
 
-.whiteboardBox{
-    flex:1;
-    background:#fff;
-    border:2px solid #d1fae5;
-    border-radius:16px;
-    overflow:hidden;
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
+.whiteboardBox {
+  flex: 1;
+  background: #fff;
+  border: 2px solid #d1fae5;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
-.chatSection{
-    width:25%;
-    background:white;
-    border-radius:16px;
-    overflow:hidden;
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
-    display:flex;
-    flex-direction:column;
+.chatSection {
+  width: 25%;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.leaveBtn {
+  margin-top: 18px;
+  width: 220px;
+  align-self: center;
+
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.leaveBtn:hover {
+  background: #dc2626;
 }

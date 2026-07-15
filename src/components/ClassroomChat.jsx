@@ -1,31 +1,65 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/ClassroomChat.css";
+import {
+  sendMessage,
+  getMessages,
+  deleteMessage,
+} from "../services/chatService";
 
-export default function ClassroomChat() {
-  const [chat, setChat] = useState([
-    {
-      sender: "Trainer",
-      text: "Good morning everyone! Let's begin our discussion.",
-    },
-  ]);
-
+export default function ClassroomChat({ sessionId }) {
+  const [chat, setChat] = useState([]);
   const [typingBox, setTypingBox] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  const sendIt = () => {
+  const role = localStorage.getItem("role");
+  const senderId = localStorage.getItem("userId");
+  const senderName = localStorage.getItem("userName");
+  const loadMessages = async () => {
+    try {
+      const response = await getMessages(sessionId);
+      setChat(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (sessionId) {
+      loadMessages();
+    }
+  }, [sessionId]);
+
+  const sendIt = async () => {
     if (typingBox.trim() === "") {
       setErrorMsg("Please type a message before sending.");
       return;
     }
 
-    const myMsg = {
-      sender: "You",
-      text: typingBox.trim(),
-    };
+    try {
+      await sendMessage({
+        sessionId,
+        senderId,
+        senderName,
+        message: typingBox,
+        messageType: "TEXT",
+      });
 
-    setChat([...chat, myMsg]);
-    setTypingBox("");
-    setErrorMsg("");
+      setTypingBox("");
+      setErrorMsg("");
+
+      loadMessages();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const removeMessage = async (id) => {
+    try {
+      await deleteMessage(id);
+      loadMessages();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const enterButton = (e) => {
@@ -39,17 +73,31 @@ export default function ClassroomChat() {
       <h2 className="chatTitle">Classroom Chat</h2>
 
       <div className="msgArea">
-        {chat.map((chatItem, index) => (
-          <div
-            key={index}
-            className={`msg ${
-              chatItem.sender === "Trainer" ? "trainerMsg" : "yourMsg"
-            }`}
-          >
-            <strong>{chatItem.sender}</strong>
-            <div>{chatItem.text}</div>
-          </div>
-        ))}
+        {chat.length === 0 ? (
+          <p>No messages yet.</p>
+        ) : (
+          chat.map((chatItem) => (
+            <div
+              key={chatItem.id}
+              className={`msg ${
+                chatItem.senderId === senderId ? "yourMsg" : "trainerMsg"
+              }`}
+            >
+              <strong>{chatItem.senderName}</strong>
+
+              <div className="messageText">{chatItem.message}</div>
+
+              {(role === "TRAINER" || role === "ADMIN") && (
+                <button
+                  className="deleteBtn"
+                  onClick={() => removeMessage(chatItem.id)}
+                >
+                  🗑 Delete
+                </button>
+              )}
+            </div>
+          ))
+        )}
       </div>
 
       {errorMsg && <p className="errMsg">{errorMsg}</p>}

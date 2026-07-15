@@ -1,88 +1,111 @@
-.chatBox{
-    width:100%;
-    height:100%;
-    display:flex;
-    flex-direction:column;
+.chatBox {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.chatTitle{
-    background:#10b981;
-    color:white;
-    text-align:center;
-    padding:18px;
-    font-size:24px;
-    font-weight:bold;
+.chatTitle {
+  background: #10b981;
+  color: white;
+  text-align: center;
+  padding: 18px;
+  font-size: 24px;
+  font-weight: bold;
 }
 
-.msgArea{
-    flex:1;
-    overflow-y:auto;
-    background:#f9fafb;
-    padding:18px;
+.msgArea {
+  flex: 1;
+  overflow-y: auto;
+  background: #f9fafb;
+  padding: 18px;
 }
 
-.msg{
-    max-width:80%;
-    padding:12px;
-    margin-bottom:12px;
-    border-radius:12px;
-    line-height:1.5;
+.msg {
+  max-width: 80%;
+  padding: 14px;
+  margin-bottom: 14px;
+  border-radius: 16px;
+  position: relative;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
 }
 
-.msg strong{
-    display:block;
-    margin-bottom:5px;
-    font-size:13px;
+.msg strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 8px;
+  font-weight: 700;
 }
 
-.trainerMsg{
-    background:#dcfce7;
-    color:#14532d;
+.trainerMsg {
+  background: #ecfdf5;
+  color: #065f46;
 }
 
-.yourMsg{
-    background:#10b981;
-    color:white;
-    margin-left:auto;
+.yourMsg {
+  background: #10b981;
+  color: white;
+  margin-left: auto;
+}
+.messageText {
+  font-size: 15px;
+  line-height: 1.6;
+  word-break: break-word;
 }
 
-.errMsg{
-    color:red;
-    padding:10px 18px 0;
-    font-size:14px;
+.deleteBtn {
+  margin-top: 10px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.3s;
 }
 
-.inputPart{
-    display:flex;
-    gap:10px;
-    padding:15px;
-    border-top:1px solid #e5e7eb;
-    background:white;
+.deleteBtn:hover {
+  background: #dc2626;
 }
 
-.inputPart input{
-    flex:1;
-    padding:12px 16px;
-    border-radius:25px;
-    border:1px solid #d1d5db;
-    outline:none;
-    font-size:15px;
+.errMsg {
+  color: red;
+  padding: 10px 18px 0;
+  font-size: 14px;
 }
 
-.inputPart input:focus{
-    border-color:#10b981;
+.inputPart {
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+  border-top: 1px solid #e5e7eb;
+  background: white;
 }
 
-.inputPart button{
-    background:#10b981;
-    color:white;
-    border:none;
-    border-radius:25px;
-    padding:12px 20px;
-    cursor:pointer;
-    transition:.3s;
+.inputPart input {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 25px;
+  border: 1px solid #d1d5db;
+  outline: none;
+  font-size: 15px;
 }
 
-.inputPart button:hover{
-    background:#059669;
+.inputPart input:focus {
+  border-color: #10b981;
+}
+
+.inputPart button {
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.inputPart button:hover {
+  background: #059669;
 }
