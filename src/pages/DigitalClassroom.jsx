@@ -1,111 +1,76 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Excalidraw } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
 import ClassroomChat from "../components/ClassroomChat";
 import "../styles/DigitalClassroom.css";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import { saveBoard, getBoard, clearBoard } from "../services/whiteboardService";
 
 export default function DigitalClassroom() {
-  const [initialData, setInitialData] = useState({
-    elements: [],
-  });
   const location = useLocation();
-
   const navigate = useNavigate();
+
+  const excalidrawAPI = useRef(null);
+  const saveTimer = useRef(null);
 
   const sessionId = location.state?.roomId;
 
   if (!sessionId) {
     return (
       <div>
-        <h2>No session selected.</h2>
+        <h2>No session selected</h2>
       </div>
     );
   }
-  console.log("Session ID:", sessionId);
-  // MARK JOIN ATTENDANCE
+
+  // ---------------- ATTENDANCE ----------------
 
   const markAttendance = async () => {
     try {
-      const role = localStorage.getItem("role");
-
-      if (role !== "STUDENT") {
-        return;
-      }
-
-      const userId = localStorage.getItem("userId");
-
-      if (!userId || !sessionId) {
-        console.log("Missing user or session");
-        return;
-      }
+      if (localStorage.getItem("role") !== "STUDENT") return;
 
       await axios.post(
         "http://localhost:8080/api/attendance/mark",
-
         {
-          userId: userId,
-
-          sessionId: sessionId,
-
+          userId: localStorage.getItem("userId"),
+          sessionId,
           joinTime: new Date().toISOString().slice(0, 19),
-
           status: "Present",
         },
-
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         },
       );
-
-      console.log("Attendance marked");
-    } catch (error) {
-      console.log("Attendance Error", error.response?.data);
+    } catch (err) {
+      console.log(err);
     }
   };
-
-  // UPDATE LEAVE TIME AND DURATION
 
   const updateLeaveAttendance = async () => {
     try {
-      const role = localStorage.getItem("role");
-
-      if (role !== "STUDENT") {
-        return;
-      }
-
-      const userId = localStorage.getItem("userId");
+      if (localStorage.getItem("role") !== "STUDENT") return;
 
       await axios.put(
         "http://localhost:8080/api/attendance/update",
-
         {
-          userId: userId,
-
-          sessionId: sessionId,
-
+          userId: localStorage.getItem("userId"),
+          sessionId,
           leaveTime: new Date().toISOString().slice(0, 19),
-
           status: "Present",
         },
-
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         },
       );
-
-      console.log("Leave attendance updated");
-    } catch (error) {
-      console.log("Leave Error", error.response?.data);
+    } catch (err) {
+      console.log(err);
     }
   };
-
-  // LEAVE CLASS BUTTON
 
   const leaveClass = async () => {
     await updateLeaveAttendance();
@@ -123,23 +88,99 @@ export default function DigitalClassroom() {
     }
   };
 
-  useEffect(() => {
-    const savedData = localStorage.getItem("whiteboard");
+  // ---------------- LOAD BOARD ----------------
 
-    if (savedData) {
-      setInitialData({
-        elements: JSON.parse(savedData),
-      });
+  const loadBoard = async () => {
+    try {
+      const res = await getBoard(sessionId);
+
+      // No board exists
+      if (!res.data) {
+        if (excalidrawAPI.current) {
+          excalidrawAPI.current.updateScene({
+            elements: [],
+          });
+        }
+        return;
+      }
+
+      const elements = JSON.parse(res.data.drawingData);
+
+      if (excalidrawAPI.current) {
+        excalidrawAPI.current.updateScene({
+          elements,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+
+      if (excalidrawAPI.current) {
+        excalidrawAPI.current.updateScene({
+          elements: [],
+        });
+      }
     }
+  };
+
+  useEffect(() => {
+    markAttendance();
   }, []);
 
-  const handleChange = (elements) => {
-    localStorage.setItem(
-      "whiteboard",
+  useEffect(() => {
+    const role = localStorage.getItem("role");
 
-      JSON.stringify(elements),
-    );
+    if (role === "STUDENT") {
+      const interval = setInterval(() => {
+        loadBoard();
+      }, 1500);
+
+      return () => clearInterval(interval);
+    }
+  }, [sessionId]);
+
+  const handleChange = (elements) => {
+    // Only trainer can save the whiteboard
+    if (localStorage.getItem("role") !== "TRAINER") {
+      return;
+    }
+
+    // Cancel previous save
+    if (saveTimer.current) {
+      clearTimeout(saveTimer.current);
+    }
+
+    // Save after 1 second
+    saveTimer.current = setTimeout(async () => {
+      try {
+        await saveBoard({
+          sessionId: sessionId,
+          userId: localStorage.getItem("userId"),
+          drawingData: JSON.stringify(elements),
+          toolType: "PEN",
+          color: "#000000",
+          strokeWidth: 2,
+        });
+
+        console.log("Whiteboard Saved");
+      } catch (error) {
+        console.log(error);
+      }
+    }, 1000);
   };
+
+  useEffect(() => {
+    if (excalidrawAPI.current) {
+      loadBoard();
+    }
+  }, [sessionId]);
+
+  useEffect(() => {
+    return () => {
+      if (saveTimer.current) {
+        clearTimeout(saveTimer.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="digitalContainer">
@@ -149,14 +190,52 @@ export default function DigitalClassroom() {
         <div className="whiteboardBox">
           <Excalidraw
             theme="light"
-            initialData={initialData}
+            excalidrawAPI={(api) => {
+              excalidrawAPI.current = api;
+
+              // Load saved board after Excalidraw is ready
+              loadBoard();
+            }}
             onChange={handleChange}
           />
         </div>
-
+          <div className="buttonRow">
         <button className="leaveBtn" onClick={leaveClass}>
           Leave Classroom
         </button>
+
+        {localStorage.getItem("role") === "TRAINER" && (
+          <button
+            className="clearBtn"
+            onClick={async () => {
+              try {
+                // Clear trainer screen immediately
+                if (excalidrawAPI.current) {
+                  excalidrawAPI.current.updateScene({
+                    elements: [],
+                  });
+                }
+
+                // Save empty board
+                await saveBoard({
+                  sessionId,
+                  userId: localStorage.getItem("userId"),
+                  drawingData: JSON.stringify([]),
+                  toolType: "PEN",
+                  color: "#000000",
+                  strokeWidth: 2,
+                });
+
+                console.log("Whiteboard Cleared");
+              } catch (error) {
+                console.log(error);
+              }
+            }}
+          >
+            Clear Whiteboard
+          </button>
+        )}
+        </div>
       </div>
 
       <div className="chatSection">

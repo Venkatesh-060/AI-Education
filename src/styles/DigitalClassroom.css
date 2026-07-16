@@ -9,7 +9,7 @@
   gap: 20px;
   padding: 20px;
   height: 100vh;
-  background: #f0fdf4;
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
 }
 
 .whiteboardSection {
@@ -18,19 +18,22 @@
   flex-direction: column;
 }
 
-.whiteboardSection h2 {
-  font-size: 30px;
-  color: #111827;
-  margin-bottom: 15px;
+.whiteboardSection h2{
+    font-size:26px;
+    font-weight:700;
+    color:#1f2937;
+    margin-bottom:18px;
 }
 
-.whiteboardBox {
-  flex: 1;
-  background: #fff;
-  border: 2px solid #d1fae5;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+.whiteboardBox{
+    flex:1;
+    background:#fff;
+    border-radius:18px;
+    overflow:hidden;
+    border:1px solid #e5e7eb;
+    box-shadow:
+    0 10px 30px rgba(15,23,42,.08);
+    transition:.3s;
 }
 
 .chatSection {
@@ -43,24 +46,46 @@
   flex-direction: column;
 }
 
+.buttonRow{
+    display:flex;
+    gap:15px;
+    margin-top:20px;
+}
+
 .leaveBtn {
   margin-top: 18px;
   width: 220px;
   align-self: center;
-
-  background: #ef4444;
+  background:#2563eb;
   color: white;
   border: none;
+  flex:1;
+  height:50px;
+   border-radius:12px;
   padding: 14px;
-  border-radius: 10px;
-
   font-size: 16px;
   font-weight: 600;
-
   cursor: pointer;
   transition: 0.3s;
 }
 
 .leaveBtn:hover {
-  background: #dc2626;
+  background:#1d4ed8;
+}
+
+.clearBtn {
+  margin-top: 18px;
+  padding: 12px 18px;
+  border: none;
+  flex:1;
+  height:50px;
+  border-radius:12px;
+  background:#f97316;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.clearBtn:hover {
+  background:#ea580c;
 }
