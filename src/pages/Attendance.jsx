@@ -3,8 +3,9 @@ import AttendanceStatsCard from "../components/AttendanceStatsCard";
 import AttendanceFilters from "../components/AttendanceFilters";
 import AttendanceTable from "../components/AttendanceTable";
 import AttendanceDetailsModal from "../components/AttendanceDetailsModal";
-import { getAllAttendance } from "../services/attendanceService";
+import { getAttendanceReport } from "../services/attendanceService";
 import "../styles/Attendance.css";
+
 
 export default function Attendance() {
   const [attendance, setAttendance] = useState([]);
@@ -15,7 +16,7 @@ export default function Attendance() {
 
   const loadAttendance = async () => {
     try {
-      const response = await getAllAttendance();
+      const response = await getAttendanceReport();
 
       console.log(response.data);
 

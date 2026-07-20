@@ -1,13 +1,15 @@
 export default function AttendanceRow({ attendance, viewDetails }) {
   return (
     <tr>
-      <td>{attendance.userId}</td>
+      <td>{attendance.studentName}</td>
 
-      <td>{attendance.sessionId}</td>
+      <td>{attendance.sessionName}</td>
+
+      <td>{attendance.batchName}</td>
 
       <td>{attendance.joinTime}</td>
 
-      <td>{attendance.leaveTime}</td>
+      <td>{attendance.leaveTime || "-"}</td>
 
       <td>{attendance.duration} mins</td>
 
@@ -18,11 +20,12 @@ export default function AttendanceRow({ attendance, viewDetails }) {
       </td>
 
       <td>
-        <button 
-        className="viewDetailsBtn"
-        onClick={() => viewDetails(attendance)}
+        <button
+          className="viewDetailsBtn"
+          onClick={() => viewDetails(attendance)}
         >
-          View Details</button>
+          View
+        </button>
       </td>
     </tr>
   );

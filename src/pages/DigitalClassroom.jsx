@@ -13,6 +13,7 @@ export default function DigitalClassroom() {
 
   const excalidrawAPI = useRef(null);
   const saveTimer = useRef(null);
+  const attendanceMarked = useRef(false);
 
   const sessionId = location.state?.roomId;
 
@@ -28,54 +29,99 @@ export default function DigitalClassroom() {
 
   const markAttendance = async () => {
     try {
-      if (localStorage.getItem("role") !== "STUDENT") return;
+      const role = localStorage.getItem("role");
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
 
-      await axios.post(
+      if (role !== "STUDENT") {
+        return;
+      }
+
+      if (!token) {
+        console.log("Token missing");
+        return;
+      }
+
+      const data = {
+        userId: userId,
+        sessionId: sessionId,
+        joinTime: new Date().toISOString().slice(0, 19),
+        status: "Present",
+      };
+
+      console.log("Attendance Data", data);
+
+      const response = await axios.post(
         "http://localhost:8080/api/attendance/mark",
-        {
-          userId: localStorage.getItem("userId"),
-          sessionId,
-          joinTime: new Date().toISOString().slice(0, 19),
-          status: "Present",
-        },
+        data,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         },
       );
-    } catch (err) {
-      console.log(err);
+
+      console.log(response.data);
+    } catch (error) {
+      console.log("Attendance Mark Error", error.response?.data);
     }
   };
 
   const updateLeaveAttendance = async () => {
     try {
-      if (localStorage.getItem("role") !== "STUDENT") return;
+      const role = localStorage.getItem("role");
 
-      await axios.put(
+      if (role !== "STUDENT") {
+        return;
+      }
+
+      console.log(
+ "TOKEN:",
+ localStorage.getItem("token")
+);
+
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+
+      if (!token || !userId) {
+        console.log("Missing token or user");
+        return;
+      }
+
+      const data = {
+        userId: userId,
+        sessionId: sessionId,
+        leaveTime: new Date().toISOString().slice(0, 19),
+      };
+
+      console.log("Leave Data", data);
+
+      const response = await axios.put(
         "http://localhost:8080/api/attendance/update",
-        {
-          userId: localStorage.getItem("userId"),
-          sessionId,
-          leaveTime: new Date().toISOString().slice(0, 19),
-          status: "Present",
-        },
+
+        data,
+
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         },
       );
-    } catch (err) {
-      console.log(err);
+
+      console.log("Leave Updated", response.data);
+    } catch (error) {
+      console.log("Leave Update Error", error.response);
     }
   };
 
   const leaveClass = async () => {
-    await updateLeaveAttendance();
-
     const role = localStorage.getItem("role");
+
+    if (role === "STUDENT") {
+      await updateLeaveAttendance();
+    }
 
     if (role === "TRAINER") {
       navigate("/trainer-dashboard");
@@ -123,6 +169,10 @@ export default function DigitalClassroom() {
   };
 
   useEffect(() => {
+    if (attendanceMarked.current) return;
+
+    attendanceMarked.current = true;
+
     markAttendance();
   }, []);
 
@@ -130,11 +180,15 @@ export default function DigitalClassroom() {
     const role = localStorage.getItem("role");
 
     if (role === "STUDENT") {
+      loadBoard();
+
       const interval = setInterval(() => {
         loadBoard();
-      }, 1500);
+      }, 5000);
 
-      return () => clearInterval(interval);
+      return () => {
+        clearInterval(interval);
+      };
     }
   }, [sessionId]);
 
@@ -199,42 +253,42 @@ export default function DigitalClassroom() {
             onChange={handleChange}
           />
         </div>
-          <div className="buttonRow">
-        <button className="leaveBtn" onClick={leaveClass}>
-          Leave Classroom
-        </button>
-
-        {localStorage.getItem("role") === "TRAINER" && (
-          <button
-            className="clearBtn"
-            onClick={async () => {
-              try {
-                // Clear trainer screen immediately
-                if (excalidrawAPI.current) {
-                  excalidrawAPI.current.updateScene({
-                    elements: [],
-                  });
-                }
-
-                // Save empty board
-                await saveBoard({
-                  sessionId,
-                  userId: localStorage.getItem("userId"),
-                  drawingData: JSON.stringify([]),
-                  toolType: "PEN",
-                  color: "#000000",
-                  strokeWidth: 2,
-                });
-
-                console.log("Whiteboard Cleared");
-              } catch (error) {
-                console.log(error);
-              }
-            }}
-          >
-            Clear Whiteboard
+        <div className="buttonRow">
+          <button className="leaveBtn" onClick={leaveClass}>
+            Leave Classroom
           </button>
-        )}
+
+          {localStorage.getItem("role") === "TRAINER" && (
+            <button
+              className="clearBtn"
+              onClick={async () => {
+                try {
+                  // Clear trainer screen immediately
+                  if (excalidrawAPI.current) {
+                    excalidrawAPI.current.updateScene({
+                      elements: [],
+                    });
+                  }
+
+                  // Save empty board
+                  await saveBoard({
+                    sessionId,
+                    userId: localStorage.getItem("userId"),
+                    drawingData: JSON.stringify([]),
+                    toolType: "PEN",
+                    color: "#000000",
+                    strokeWidth: 2,
+                  });
+
+                  console.log("Whiteboard Cleared");
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+            >
+              Clear Whiteboard
+            </button>
+          )}
         </div>
       </div>
 
