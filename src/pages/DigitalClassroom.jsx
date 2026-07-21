@@ -1,11 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { Excalidraw } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
 import ClassroomChat from "../components/ClassroomChat";
 import "../styles/DigitalClassroom.css";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import { saveBoard, getBoard, clearBoard } from "../services/whiteboardService";
+import { saveBoard, getBoard } from "../services/whiteboardService";
 
 export default function DigitalClassroom() {
   const location = useLocation();
@@ -17,17 +17,11 @@ export default function DigitalClassroom() {
 
   const sessionId = location.state?.roomId;
 
-  if (!sessionId) {
-    return (
-      <div>
-        <h2>No session selected</h2>
-      </div>
-    );
-  }
+  
 
   // ---------------- ATTENDANCE ----------------
 
-  const markAttendance = async () => {
+  const markAttendance = useCallback( async () => {
     try {
       const role = localStorage.getItem("role");
       const token = localStorage.getItem("token");
@@ -66,7 +60,7 @@ export default function DigitalClassroom() {
     } catch (error) {
       console.log("Attendance Mark Error", error.response?.data);
     }
-  };
+  },[sessionId]);
 
   const updateLeaveAttendance = async () => {
     try {
@@ -136,7 +130,7 @@ export default function DigitalClassroom() {
 
   // ---------------- LOAD BOARD ----------------
 
-  const loadBoard = async () => {
+  const loadBoard = useCallback( async () => {
     try {
       const res = await getBoard(sessionId);
 
@@ -166,33 +160,9 @@ export default function DigitalClassroom() {
         });
       }
     }
-  };
+  },[sessionId])
 
-  useEffect(() => {
-    if (attendanceMarked.current) return;
-
-    attendanceMarked.current = true;
-
-    markAttendance();
-  }, []);
-
-  useEffect(() => {
-    const role = localStorage.getItem("role");
-
-    if (role === "STUDENT") {
-      loadBoard();
-
-      const interval = setInterval(() => {
-        loadBoard();
-      }, 5000);
-
-      return () => {
-        clearInterval(interval);
-      };
-    }
-  }, [sessionId]);
-
-  const handleChange = (elements) => {
+   const handleChange = (elements) => {
     // Only trainer can save the whiteboard
     if (localStorage.getItem("role") !== "TRAINER") {
       return;
@@ -221,12 +191,37 @@ export default function DigitalClassroom() {
       }
     }, 1000);
   };
+  useEffect(() => {
+    if (attendanceMarked.current) return;
+
+    attendanceMarked.current = true;
+
+    markAttendance();
+  }, [markAttendance]);
+
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+
+    if (role === "STUDENT") {
+      loadBoard();
+
+      const interval = setInterval(() => {
+        loadBoard();
+      }, 5000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [loadBoard]);
+
+  
 
   useEffect(() => {
     if (excalidrawAPI.current) {
       loadBoard();
     }
-  }, [sessionId]);
+  }, [loadBoard]);
 
   useEffect(() => {
     return () => {
@@ -235,6 +230,14 @@ export default function DigitalClassroom() {
       }
     };
   }, []);
+
+  if (!sessionId) {
+    return (
+      <div>
+        <h2>No session selected</h2>
+      </div>
+    );
+  }
 
   return (
     <div className="digitalContainer">

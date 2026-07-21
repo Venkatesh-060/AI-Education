@@ -6,7 +6,6 @@ import AttendanceDetailsModal from "../components/AttendanceDetailsModal";
 import { getAttendanceReport } from "../services/attendanceService";
 import "../styles/Attendance.css";
 
-
 export default function Attendance() {
   const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,27 +13,24 @@ export default function Attendance() {
   const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
 
-  const loadAttendance = async () => {
-    try {
-      const response = await getAttendanceReport();
-
-      console.log(response.data);
-
-      setAttendance(response.data);
-    } catch (err) {
-      console.log(err);
-
-      setError("Unable to load attendance");
-    } finally {
-      setLoading(false);
-    }
-  };
-  
   useEffect(() => {
-    loadAttendance();
-  }, []);
+    const fetchAttendance = async () => {
+      try {
+        const response = await getAttendanceReport();
 
-  
+        console.log(response.data);
+
+        setAttendance(response.data);
+      } catch (err) {
+        console.error(err);
+        setError("Unable to load attendance");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAttendance();
+  }, []);
 
   const filtered = attendance.filter((item) =>
     (item.userId || "").toLowerCase().includes(search.toLowerCase()),

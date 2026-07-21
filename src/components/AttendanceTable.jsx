@@ -1,6 +1,5 @@
-import React from "react";
 import AttendanceRow from "./AttendanceRow";
-import { getAttendanceReport } from "../services/attendanceService";
+// import { getAttendanceReport } from "../services/attendanceService";
 export default function AttendanceTable({ attendance, viewDetails }) {
   if (attendance.length === 0) {
     return <h3>No attendance records found</h3>;
