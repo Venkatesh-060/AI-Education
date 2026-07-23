@@ -29,14 +29,13 @@ export default function Login() {
         email: email,
         password: pass,
       });
-      console.log(response.data);
 
-      const { token, role, userId, firstName, lastName } = response.data;
-
+      const { token, role, userId, firstName, lastName,} = response.data;
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
       localStorage.setItem("userId", userId);
       localStorage.setItem("userName", firstName + " " + lastName);
+      localStorage.setItem("email", response.data.email);
 
       alert("Login Successful");
 

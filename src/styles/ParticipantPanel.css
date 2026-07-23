@@ -1,0 +1,192 @@
+.participantPanel {
+  flex: 1;
+  overflow-y: auto;
+  background: #f8fafc;
+  padding: 18px;
+}
+
+.participantHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.participantHeader h3 {
+  font-size: 22px;
+  color: #111827;
+}
+
+.participantHeader span {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.participantSearch {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #dbe3ec;
+  border-radius: 10px;
+  margin-bottom: 18px;
+}
+
+.participantSearch:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.participantCard {
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.participantTop {
+  display: flex;
+  justify-content: space-between;
+}
+
+.participantInfo {
+  display: flex;
+  gap: 14px;
+}
+
+.avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.participantInfo h4 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.participantInfo small {
+  color: #64748b;
+}
+
+.liveStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.onlineDot,
+.offlineDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.onlineDot {
+  background: #22c55e;
+}
+
+.offlineDot {
+  background: #94a3b8;
+}
+
+.status {
+  font-weight: 700;
+}
+
+.active {
+  color: #16a34a;
+}
+
+.removed {
+  color: #ef4444;
+}
+
+.deviceStatus {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.controlPanel {
+  margin-top: 15px;
+}
+
+.controlPanel summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #2563eb;
+  padding: 8px 0;
+}
+
+.actionGrid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.actionGrid button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.primaryBtn {
+  background: #2563eb;
+}
+
+.successBtn {
+  background: #10b981;
+}
+
+.warningBtn {
+  background: #f59e0b;
+}
+
+.removeBtn {
+  background: #ef4444;
+}
+
+.allowBtn {
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #16a34a;
+  color: white;
+  font-weight: bold;
+}
+
+.actionGrid button:hover {
+  opacity: 0.9;
+}
+
+.actionGrid button:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.emptyText {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}

@@ -1,37 +1,37 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../styles/ClassroomChat.css";
 import {
   sendMessage,
   getMessages,
   deleteMessage,
 } from "../services/chatService";
+import socket from "../services/socketService";
 
 export default function ClassroomChat({ sessionId }) {
   const [chat, setChat] = useState([]);
   const [typingBox, setTypingBox] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
+  const [canChat, setCanChat] = useState(true);
+
   const role = localStorage.getItem("role");
   const senderId = localStorage.getItem("userId");
   const senderName = localStorage.getItem("userName");
+
+  const messageEndRef = useRef(null);
+
   const loadMessages = async () => {
     try {
       const response = await getMessages(sessionId);
       setChat(response.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
-  useEffect(() => {
-    if (sessionId) {
-      loadMessages();
-    }
-  }, [sessionId]);
-
   const sendIt = async () => {
-    if (typingBox.trim() === "") {
-      setErrorMsg("Please type a message before sending.");
+    if (!typingBox.trim()) {
+      setErrorMsg("Please type a message.");
       return;
     }
 
@@ -49,7 +49,7 @@ export default function ClassroomChat({ sessionId }) {
 
       loadMessages();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -58,19 +58,33 @@ export default function ClassroomChat({ sessionId }) {
       await deleteMessage(id);
       loadMessages();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
-  const enterButton = (e) => {
-    if (e.key === "Enter") {
-      sendIt();
+  useEffect(() => {
+    if (sessionId) {
+      loadMessages();
     }
-  };
+  }, [sessionId]);
+
+  useEffect(() => {
+    socket.on("chat-permission", setCanChat);
+
+    return () => {
+      socket.off("chat-permission");
+    };
+  }, []);
+
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [chat]);
 
   return (
     <div className="chatBox">
-      <h2 className="chatTitle">Classroom Chat</h2>
+      <div className="chatTitle">💬 Classroom Chat</div>
 
       <div className="msgArea">
         {chat.length === 0 ? (
@@ -98,15 +112,18 @@ export default function ClassroomChat({ sessionId }) {
             </div>
           ))
         )}
+
+        <div ref={messageEndRef} />
       </div>
 
-      {errorMsg && <p className="errMsg">{errorMsg}</p>}
+      {errorMsg && <div className="errMsg">{errorMsg}</div>}
 
       <div className="inputPart">
         <input
           type="text"
-          placeholder="Type your message..."
+          placeholder={canChat ? "Type your message..." : "Chat Disabled"}
           value={typingBox}
+          disabled={!canChat}
           onChange={(e) => {
             setTypingBox(e.target.value);
 
@@ -114,10 +131,16 @@ export default function ClassroomChat({ sessionId }) {
               setErrorMsg("");
             }
           }}
-          onKeyDown={enterButton}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              sendIt();
+            }
+          }}
         />
 
-        <button onClick={sendIt}>Send</button>
+        <button onClick={sendIt} disabled={!canChat}>
+          Send
+        </button>
       </div>
     </div>
   );

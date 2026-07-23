@@ -35,12 +35,12 @@ export default function StudentDashboard() {
   }, []);
 
   const joinSession = (id) => {
-    navigate("/classroom", {
-      state: {
-        roomId: id,
-      },
-    });
-  };
+  navigate("/classroom", {
+    state: {
+      roomId: id,
+    },
+  });
+};
 
   return (
     <div className="studentDashboard">

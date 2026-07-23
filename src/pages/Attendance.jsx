@@ -18,11 +18,9 @@ export default function Attendance() {
       try {
         const response = await getAttendanceReport();
 
-        console.log(response.data);
-
         setAttendance(response.data);
       } catch (err) {
-        console.error(err);
+        console.error("Attendance Fetch Error:", err);
         setError("Unable to load attendance");
       } finally {
         setLoading(false);

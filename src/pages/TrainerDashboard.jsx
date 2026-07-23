@@ -43,9 +43,7 @@ export default function TrainerDashboard() {
   };
 
   const saveSession = async (sessionData) => {
-    console.log("saveSession called");
-    console.log(sessionData);
-
+    
     try {
       const trainerId = localStorage.getItem("userId");
 
@@ -57,8 +55,6 @@ export default function TrainerDashboard() {
         startTime: sessionData.time,
         endTime: sessionData.endTime,
       };
-
-      console.log(newSession);
 
       await axios.post("http://localhost:8080/api/session/create", newSession);
 
